@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+
+.header{
+display: flex;
+justify-content: space-between;  
+align-items: center;
+font-family: 'Roboto', sans-serif;
+
+}
+
+.header--titleLogo{
+    color: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding-left: 15px;
+}
+
+.header--logo{
+    padding-left: 10px;
+}
+
+.header--links li{
+    list-style: none;
+}
+
+.header--links li {
+    display: inline-block;
+    padding: 0px 15px;
+}
+
+.header--account{
+    padding-right: 15px;
+}
