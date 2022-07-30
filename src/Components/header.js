@@ -1,17 +1,38 @@
 import React from 'react';
-import bootstrap from 'bootstrap'
 import './headerStyle.css'
+import firebaseApp from '../firebase/credenciales';
+import { getAuth,onAuthStateChanged, signOut } from 'firebase/auth';
 
-export default function NavBar(){
+export default function NavBar(props){
 
-    const [admin,setAdmin] = React.useState(true)
-    const [logged, setLogged] = React.useState(false)
+    const auth = getAuth(firebaseApp)
+
+    console.log(props.user)
+
+    function cerrarSesion() {
+        signOut(auth)
+    }
+
+    const InvitedHeader = (
+        <div className='header'>
+        <div className='header--titleLogo'>
+            <h2 className='header--title'>Safety Stock</h2>
+            {/* <img className='header--logo' src='' alt='Logo'></img> */}
+        </div>
+        <ul className='header--links'>
+            <li>
+                <a href='busqueda'>Buscar</a>
+            </li>
+        </ul>
+        <a className='header--account' href='/signup'>Iniciar sesión o regístrate</a>
+    </div>
+    )
 
     const AdminHeader = (
     <header className='header'>
         <div className='header--titleLogo'>
-        <h2 className='header--title'>Safety Stock</h2>
-        <img className='header--logo' src='' alt='Logo'></img>
+            <h2 className='header--title'>Safety Stock</h2>
+            {/* <img className='header--logo' src='' alt='Logo'></img> */}
         </div>
         <ul className='header--links'>
             <li>
@@ -30,13 +51,17 @@ export default function NavBar(){
                 <a href='Historial'>Historial</a>
             </li>
         </ul>
-        <p className='header--account'>Mi cuenta</p>
+        <p className='header--account' onClick={cerrarSesion}>{"Cerrar sesión"}</p>
     </header>
     )
 
     const UserHeader = (
     <div className='header'>
-        <ul>
+        <div className='header--titleLogo'>
+            <h2 className='header--title'>Safety Stock</h2>
+            {/* <img className='header--logo' src='' alt='Logo'></img> */}
+        </div>
+        <ul className='header--links'>
             <li>
                 <a href='busqueda'>Buscar</a>
             </li>
@@ -46,14 +71,22 @@ export default function NavBar(){
             <li>
                 <a href='historial/name'>Mi historial</a>
             </li>
-            <li>
-                <a href='historial/name'>Mi cuenta</a>
-            </li>
         </ul>
+        <p className='header--account' onClick={cerrarSesion} >Cerrar sesión</p>
     </div>
     )
 
+    function Header (){
+        if(props.user){
+            if(props.admin){
+                return AdminHeader
+            }
+            else return UserHeader
+        }
+        else return InvitedHeader
+    }
+
     return(
-        <header>{admin ? AdminHeader : UserHeader}</header>
+        <header>{Header()}</header>
     )
 }

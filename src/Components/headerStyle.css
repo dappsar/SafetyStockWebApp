@@ -1,15 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
 
+
 .header{
-display: flex;
-justify-content: space-between;  
-align-items: center;
-font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: space-between;  
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    color: white;
 
 }
 
 .header--titleLogo{
-    color: white;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -20,8 +21,10 @@ font-family: 'Roboto', sans-serif;
     padding-left: 10px;
 }
 
-.header--links li{
+.header--links{
+    padding-inline-start: 0px;
     list-style: none;
+
 }
 
 .header--links li {
@@ -29,6 +32,25 @@ font-family: 'Roboto', sans-serif;
     padding: 0px 15px;
 }
 
+.header--links li a {
+    transition: all 0.3s ease 0s;
+    text-decoration: none;
+    color: white;
+}
+
+.header--links li a:hover {
+    color: red;
+}
+
 .header--account{
     padding-right: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    text-decoration: none;
+    color: white;
+
+}
+
+.header--account:hover{
+    color: red;
 }
