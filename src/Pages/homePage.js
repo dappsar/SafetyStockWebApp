@@ -1,10 +1,11 @@
 import React from 'react';
 import Header from '../Components/header'
 
-export default function navBar(props){
+export default function navBar(){
+
     return(
         <div>
-            <Header admin = {props.admin} />
+            <Header />
             <h1>Homepage</h1>
         </div>
         

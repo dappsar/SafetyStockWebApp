@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import firebaseApp from '../firebase/credenciales';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc} from 'firebase/firestore'
+import { getFirestore, setDoc} from 'firebase/firestore'
 import { useLocation } from 'wouter';
 
 const auth = getAuth(firebaseApp)
@@ -10,67 +10,92 @@ const firestore = getFirestore(firebaseApp)
 export default function NavBar(){
 
     const [, setLocation] = useLocation();
+    
+    const [nombre, setNombre] = useState('')
+    const [apellido, setApellido] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')    
+    const [curso, setCurso] = useState('')
+    const [errorMessage ,setErrorMessage] = useState(null)
+
 
     async function RegistrarUsuario(nombre, apellido, curso, email, password){
-        const infoUsuario  = await createUserWithEmailAndPassword(auth,email,password) 
-        .then((usuarioFirebase)=>{
-            return usuarioFirebase
-        })
-        console.log(infoUsuario)
-        
-        const docRef = doc(firestore, `usuarios/${infoUsuario.user.uid}`)   
-        setDoc(docRef,{
-            nombre: nombre,
-            apellido: apellido,
-            curso: curso,
-            email: email,
-            admin: false
-        })
+        const user  = await createUserWithEmailAndPassword(auth,email,password) //crea el usuario en Firebase Auth
+            .then((usuarioFirebase)=>{
+                return usuarioFirebase.user
+            })
 
-        setLocation('/')
+            const usuario = { 
+                nombre: nombre,
+                apellido: apellido,
+                curso: curso,
+                email: email,
+                admin: false
+            }
+
+        try{
+            const docRef = await setDoc(firestore, `usuarios/${user.uid}`)   //carga los datos a firestore
+            setDoc(docRef,usuario)
+            setLocation('/')
+        }
+        catch (error) {
+            console.error("Error al subir la información a la base de datos: ", error);
+        }
     }
 
     function SubmitHandler(event){
         event.preventDefault()
-        
-        const nombre = event.target.elements.nombre.value
-        const apellido = event.target.elements.apellido.value
-        const curso = event.target.elements.curso.value
-        const email = event.target.elements.email.value
-        const password = event.target.elements.password.value
-
-        RegistrarUsuario(nombre, apellido, curso, email, password)
-        console.log(email,password)
+        RegistrarUsuario(nombre, apellido, curso, email, password) //funcion para registrar usuarios y subirlos a la base de datos con todos sus campos
+        .catch((error) => { //si en RegistrarUsuario() surge un error...
+            if(error.code === 'auth/invalid-email') setErrorMessage("Formato de email incorrecto")
+            if(error.code === 'auth/weak-password') setErrorMessage("La contraseña es demasiado débil")
+            if(error.code === 'auth/email-already-in-use') setErrorMessage("El email ya está en uso") 
+          });
     }
 
     return(
         <div>
             <h1>Registrate</h1>
-            
             <form onSubmit={SubmitHandler}>
                 <label>
                     Nombre
-                    <input type="name" id='nombre'/>
+                    <input 
+                    type="name" 
+                    id='nombre'
+                    onChange={(e)=>{setNombre(e.target.value)}}/>
                 </label>
                 <label>
                     Apellido
-                    <input type="surname" id='apellido'/>
+                    <input 
+                    type="surname" 
+                    id='apellido'
+                    onChange={(e)=>{setApellido(e.target.value)}}/>
                 </label>
                 <label>
                     Curso
-                    <input type="text" id='curso'/>
+                    <input 
+                    type="text" 
+                    id='curso'
+                    onChange={(e)=>{setCurso(e.target.value)}}/>
                 </label>
                 <label>
                     Correo electrónico
-                    <input type="email" id='email'/>
+                    <input 
+                    type="email" 
+                    id='email'
+                    onChange={(e)=>{setEmail(e.target.value)}}/>
                 </label>
                 <label>
                     Contraseña
-                    <input type="password" id='password'/>
+                    <input 
+                    type="password" 
+                    id='password'
+                    onChange={(e)=>{setPassword(e.target.value)}}/>
                 </label>
                 <input type="submit" value="Registrarse"/>
                 <a href='/login'>Iniciar sesion</a>
             </form>
+            {errorMessage ? <div>{errorMessage}</div> : <span></span>}
         </div>
     )
 }

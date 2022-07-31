@@ -1,16 +1,24 @@
-import React from 'react';
+import { React, useState, useEffect } from 'react';
 import './headerStyle.css'
 import firebaseApp from '../firebase/credenciales';
-import { getAuth,onAuthStateChanged, signOut } from 'firebase/auth';
+import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 
-export default function NavBar(props){
+export default function NavBar(){
 
     const auth = getAuth(firebaseApp)
+    const [user, setUser] = useState(null)
 
-    console.log(props.user)
+    useEffect( () => {
+        onAuthStateChanged(auth, (user) =>{
+            if (user){
+                setUser(user)
+            }
+        })
+    },[])
 
     function cerrarSesion() {
         signOut(auth)
+        setUser(null)
     }
 
     const InvitedHeader = (
@@ -51,7 +59,7 @@ export default function NavBar(props){
                 <a href='Historial'>Historial</a>
             </li>
         </ul>
-        <p className='header--account' onClick={cerrarSesion}>{"Cerrar sesión"}</p>
+        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${user.email}`}</p>
     </header>
     )
 
@@ -72,16 +80,17 @@ export default function NavBar(props){
                 <a href='historial/name'>Mi historial</a>
             </li>
         </ul>
-        <p className='header--account' onClick={cerrarSesion} >Cerrar sesión</p>
+        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${user.email}`}</p>
     </div>
     )
 
     function Header (){
-        if(props.user){
-            if(props.admin){
+
+        if(user){
+            // if(user.admin){
                 return AdminHeader
-            }
-            else return UserHeader
+            // }
+            // else return UserHeader
         }
         else return InvitedHeader
     }

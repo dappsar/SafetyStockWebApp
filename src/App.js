@@ -1,59 +1,42 @@
 
-import React from 'react';
-import { Route,Switch,useLocation } from "wouter";
+import React, { useState,useEffect } from 'react';
+import { Route,Switch } from "wouter";
 
 import firebaseApp from './firebase/credenciales'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection } from 'firebase/firestore';
 
 import Home from './Pages/homePage'
 import LoginPage from './Pages/loginPage'
 import SignupPage from './Pages/signupPage'
 import Page404 from './Pages/Page404'
 import './appStyle.css'
-import { async } from '@firebase/util';
  
 const auth = getAuth(firebaseApp)
 const firestore = getFirestore(firebaseApp)
 
+console.log(firestore)
+
 function App() {
-
-    const [, setLocation] = useLocation();
-    const [admin,setAdmin] = React.useState(true)
-    const [user, setUser] = React.useState(false)
     
-    const userParams = undefined
+    const [userParams, setUserParams] = useState(null)
 
-    async function getParams(uid){
-        const docRef = doc(firestore, `usuarios/${uid}`)
-        const docCifrada = await getDoc(docRef)   
-        const userParams = {
-            name: docCifrada.data().nombre,
-            admin: docCifrada.data().admin
-        }
-        return userParams
-    }
+    const userUid = onAuthStateChanged(auth, (user) =>{
+        if (user) console.log(user.uid)
+    })
 
-    onAuthStateChanged(auth, (firebaseUser)=>{
-        if(firebaseUser){
-            setUser(firebaseUser)
-            const userUid = firebaseUser.uid
-            userParams = getParams(userUid)
-            return userParams
-        }
-        else setUser(null)
-    }) 
-
-    console.log(userParams)
-
+    useEffect(()=>{        
+        const usuarios = doc(firestore, "usuarios/N4MLdeQQjwNeKoLsw6l2vcThVNJ2")
+        .then(()=>console.log(usuarios))
+    },[])
 
     return (
         <div className='body'>
             
             <Switch>
-            <Route path='/' component={()=>(<Home admin = {admin} user = {userParams}/>)}></Route>
+            <Route path='/' component={()=>(<Home/>)}></Route>
             <Route path='/login' component={()=>(<LoginPage/>)}></Route>
-            <Route path='/signup' component={()=>(<SignupPage/>)}></Route>
+            <Route path='/signup' component={()=>(<SignupPage />)}></Route>
             <Route >{()=>(<Page404/>)}</Route>
             </Switch>
 
