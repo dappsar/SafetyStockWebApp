@@ -3,7 +3,7 @@ import './headerStyle.css'
 import firebaseApp from '../firebase/credenciales';
 import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
 
-export default function NavBar(){
+export default function NavBar(props){
 
     const auth = getAuth(firebaseApp)
     const [user, setUser] = useState(null)
@@ -86,11 +86,13 @@ export default function NavBar(){
 
     function Header (){
 
+        console.log(props)
+
         if(user){
-            // if(user.admin){
+            if(props.admin){
                 return AdminHeader
-            // }
-            // else return UserHeader
+            }
+            else return UserHeader
         }
         else return InvitedHeader
     }
