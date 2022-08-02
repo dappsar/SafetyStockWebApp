@@ -15,11 +15,10 @@ export default function NavBar(){
     const [apellido, setApellido] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')    
-    const [curso, setCurso] = useState('')
     const [errorMessage ,setErrorMessage] = useState(null)
 
 
-    async function RegistrarUsuario(nombre, apellido, curso, email, password){
+    async function RegistrarUsuario(nombre, apellido, email, password){
         const user  = await createUserWithEmailAndPassword(auth,email,password) //crea el usuario en Firebase Auth
             .then((usuarioFirebase)=>{
                 return usuarioFirebase.user
@@ -28,7 +27,6 @@ export default function NavBar(){
             const usuario = { 
                 nombre: nombre,
                 apellido: apellido,
-                curso: curso,
                 email: email,
                 admin: false
             }
@@ -44,7 +42,7 @@ export default function NavBar(){
 
     function SubmitHandler(event){
         event.preventDefault()
-        RegistrarUsuario(nombre, apellido, curso, email, password) //funcion para registrar usuarios y subirlos a la base de datos con todos sus campos
+        RegistrarUsuario(nombre, apellido, email, password) //funcion para registrar usuarios y subirlos a la base de datos con todos sus campos
         .catch((error) => { //si en RegistrarUsuario() surge un error...
             if(error.code === 'auth/invalid-email') setErrorMessage("Formato de email incorrecto")
             if(error.code === 'auth/weak-password') setErrorMessage("La contraseña es demasiado débil")
@@ -69,13 +67,6 @@ export default function NavBar(){
                     type="surname" 
                     id='apellido'
                     onChange={(e)=>{setApellido(e.target.value)}}/>
-                </label>
-                <label>
-                    Curso
-                    <input 
-                    type="text" 
-                    id='curso'
-                    onChange={(e)=>{setCurso(e.target.value)}}/>
                 </label>
                 <label>
                     Correo electrónico

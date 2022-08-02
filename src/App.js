@@ -11,16 +11,27 @@ import LoginPage from './Pages/loginPage'
 import SignupPage from './Pages/signupPage'
 import Page404 from './Pages/Page404'
 import Loading from './Pages/loading'
+import Herramientas from './Pages/herramientas'
+
+import NotAllowed from './Components/notAllowed';
+
 import './appStyle.css'
  
 
 function App() {
+
     const auth = getAuth(firebaseApp)
     const firestore = getFirestore(firebaseApp)
     var pathname = window.location.pathname
 
     const [userParams, setUserParams] = useState({})
     const [loading,setLoading] = useState(false)
+    var nombre = userParams.nombre
+    var admin = userParams.admin
+
+    const [scanned, setScanned] = useState('')
+    var barcode = ''
+    var interval;
 
     async function getParams(uid){
         const docRef = doc(firestore, `usuarios/${uid}`)
@@ -29,12 +40,11 @@ function App() {
     }
 
     useEffect(()=>{
-        pathname = window.location.pathname
         setLoading(true)
         setTimeout(()=>{
             setLoading(false)
         },2000)
-    },[])
+    },[pathname])
 
     useEffect(()=>{
         onAuthStateChanged(auth, (user)=>{
@@ -46,17 +56,38 @@ function App() {
             else setUserParams({})
         })
     },[])
+    
+    document.addEventListener('keydown',(event)=>{
+        if (interval) clearInterval(interval);
+        if(event.code == 'Enter'){
+            if(barcode) handleBarcode(barcode)
+            barcode = ''
+            return;
+        }
+        if (event.key !='Shift') barcode+= event.key
+        interval = setInterval(()=> barcode= '', 20);
+    })
 
-    console.log(userParams)
+    function handleBarcode(scannedBarcode){
+        setScanned(scannedBarcode)
+    }
 
     return (
         <div className='body'>
-            {loading && (pathname==='/') ? <Loading/>:
+            {loading && (pathname!=='/signup' && pathname!=='/login') ? <Loading/>:
             <Switch>
-            <Route path='/' component={()=>(<Home name = {userParams.nombre} admin = {userParams.admin}/>)}></Route>
-            <Route path='/login' component={()=>(<LoginPage/>)}></Route>
-            <Route path='/signup' component={()=>(<SignupPage />)}></Route>
-            <Route >{()=>(<Page404/>)}</Route>
+                <Route path='/' component={()=>(<Home name = {nombre} admin = {admin}/>)}></Route>
+                <Route path='/login' component={()=>(<LoginPage/>)}></Route>
+                <Route path='/signup' component={()=>(<SignupPage />)}></Route>
+
+                {/* Admin pages */}
+            
+                <Route 
+                    path={'/herramientas'} 
+                    component={()=>admin ? (<Herramientas name = {nombre} admin = {admin} barcode = {scanned}/>) : <NotAllowed />}
+                ></Route>
+                
+                <Route >{()=>(<Page404/>)}</Route>
             </Switch>
             }
         </div>

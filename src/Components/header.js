@@ -47,7 +47,7 @@ export default function NavBar(props){
                 <a href='busqueda'>Buscar</a>
             </li>
             <li>
-                <a href='herramientas'>Herramientas</a>
+                <a href='/herramientas'>Herramientas</a>
             </li>
             <li>
                 <a href='profesores'>Profesores</a>
