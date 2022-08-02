@@ -10,36 +10,53 @@ import Home from './Pages/homePage'
 import LoginPage from './Pages/loginPage'
 import SignupPage from './Pages/signupPage'
 import Page404 from './Pages/Page404'
+import Loading from './Pages/loading'
 import './appStyle.css'
  
 const auth = getAuth(firebaseApp)
 const firestore = getFirestore(firebaseApp)
 
-console.log(firestore)
-
 function App() {
     
-    const [userParams, setUserParams] = useState(null)
+    const [userParams, setUserParams] = useState({})
+    const [loading,setLoading] = useState(false)
 
-    const userUid = onAuthStateChanged(auth, (user) =>{
-        if (user) console.log(user.uid)
+    async function getParams(uid){
+        const docRef = doc(firestore, `usuarios/${uid}`)
+        const docSnap = getDoc(docRef)
+        return ((await docSnap).data())
+    }
+
+useEffect(()=>{
+    setLoading(true)
+    setTimeout(()=>{
+        setLoading(false)
+    },1000)
+},[])
+
+useEffect(()=>{
+    onAuthStateChanged(auth, (user)=>{
+        if (user){
+            console.log(user.uid)
+            getParams(user.uid).then((crudeParams)=> {
+                console.log(crudeParams)
+                setUserParams(crudeParams)
+            })
+        }
+        else setUserParams({})
     })
-
-    useEffect(()=>{        
-        const usuarios = doc(firestore, "usuarios/N4MLdeQQjwNeKoLsw6l2vcThVNJ2")
-        .then(()=>console.log(usuarios))
     },[])
 
     return (
         <div className='body'>
-            
+            {loading ? <Loading/>:
             <Switch>
             <Route path='/' component={()=>(<Home/>)}></Route>
             <Route path='/login' component={()=>(<LoginPage/>)}></Route>
             <Route path='/signup' component={()=>(<SignupPage />)}></Route>
             <Route >{()=>(<Page404/>)}</Route>
             </Switch>
-
+            }
         </div>
     );
 }

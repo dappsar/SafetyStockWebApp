@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import firebaseApp from '../firebase/credenciales';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, setDoc} from 'firebase/firestore'
+import { getFirestore, doc, setDoc} from 'firebase/firestore'
 import { useLocation } from 'wouter';
 
 const auth = getAuth(firebaseApp)
@@ -34,8 +34,7 @@ export default function NavBar(){
             }
 
         try{
-            const docRef = await setDoc(firestore, `usuarios/${user.uid}`)   //carga los datos a firestore
-            setDoc(docRef,usuario)
+            await setDoc(doc(firestore, `usuarios`, user.uid),usuario)   //carga los datos a firestore
             setLocation('/')
         }
         catch (error) {
