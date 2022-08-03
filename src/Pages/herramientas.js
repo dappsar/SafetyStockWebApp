@@ -5,6 +5,30 @@ import firebaseApp from '../firebase/credenciales';
 
 import Header from '../Components/header'
 
+import { subcategorias } from '../data/data';
+
+
+// campos: nommbre, ubicacion, cantidad, marca, contenido, cat1,cat2,cat3, codigo 
+
+//Categoria 1 
+//Ferreteria, herramientas, electricidad, electronica, pinturas, epp, instrumentos electronicos,cables 
+
+//categoria 2 
+//Herramientas: Electricas, carpinteria, herreria, generales, albalineria, medicion, electronica, electricidad 
+
+//ferreteria: Tornillas, tuercas,clavos,arandelas,remaches, tarugos, mechas, lijas 
+
+//electricidad: codos,conectores,bastidores,cajas, tapas, etc 
+
+// electronica: componentes de electronica, protoboards 
+
+//pinturas: Al agua, solventes, esmalte sintetico, sellador, diluyente, enduido, barniz 
+
+//Categoria 3: 
+//Componentes de electronica: Resistores, capacitores, ciruitos integrados, socalos, reles, diodos, 
+// bobinas, fusibles, interruptores, potenciometros, borneras, transistores, disipadores, motores, 
+//finales de carrera, pulsadores, presets, pines
+
 export default function HerramientasPage(props){
     
     const firestore = getFirestore(firebaseApp)
@@ -18,7 +42,6 @@ export default function HerramientasPage(props){
     const [cat1,setCat1] = useState('')
     const [cat2,setCat2] = useState('')
     const [cat3,setCat3] = useState('')
-
     
     const herraminetaInsumo = {
         nombre: nombre,
@@ -40,12 +63,13 @@ export default function HerramientasPage(props){
         }
     }
 
-function SubmitHandler(event){
-    event.preventDefault()
-    addTool()
-    form.reset()
-}
+    function SubmitHandler(event){
+        event.preventDefault()
+        addTool()
+        form.reset()
+    }
 
+    
     return(
         <div>
             <Header name = {props.name} admin = {props.admin}/>
@@ -70,6 +94,7 @@ function SubmitHandler(event){
                     <input 
                     type="text" 
                     id='codigo'
+                    value={props.barcode}
                     onChange={(e)=>{setCodigo(e.target.value)}}/>
                 </label>
                 <label>
@@ -82,7 +107,7 @@ function SubmitHandler(event){
                 <label>
                     Categoría
                 <select name="cat1" id="cat1" onChange={(e)=>{setCat1(e.target.value)}}>
-                    <option value="none">-</option>
+                    <option value="none">Seleccione una catgoría</option>
                     <option value="herramientas">Herramientas</option>
                     <option value="electronica">Electronica</option>
                     <option value="electricidad">Electricidad</option>
@@ -90,13 +115,17 @@ function SubmitHandler(event){
                     <option value="ferreteria">Ferretería</option>
                 </select>
                 </label>
-                <label>
-                    Subcategoría
-                <select name="cat2" id="cat2" onChange={(e)=>{setCat2(e.target.value)}}>
-                    <option value="none">-</option>
-                    <option value="componentes">Componentes</option>
+                {cat1 && <label>
+                Subcategoría
+                <select name="cat2" id="cat2" placeholder='subcategoria' onChange={(e)=>{setCat2(e.target.value)}}>
+                <option value="none">Seleccione una subcatgoría</option>
+                    {subcategorias.map(item => {
+                        console.log('El item es', item.parent, 'y la categoria es', cat1)
+                        if (cat1 === item.parent) return <option key={item.key} value={item.text}>{item.text}</option>
+                    }
+                    )}
                 </select>
-                </label>
+                </label>}
 
                 <input type="submit" value="Cargar"/>
             </form>
