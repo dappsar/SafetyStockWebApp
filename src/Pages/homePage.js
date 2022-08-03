@@ -2,7 +2,6 @@ import React from 'react';
 import Header from '../Components/header'
 
 export default function navBar(props){
-    console.log("las propeidades son", {props})
 
     return(
         <div>

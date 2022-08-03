@@ -17,19 +17,18 @@ export default function NavBar(){
     const [password, setPassword] = useState('')    
     const [errorMessage ,setErrorMessage] = useState(null)
 
+    const usuario = { 
+        nombre: nombre,
+        apellido: apellido,
+        email: email,
+        admin: false
+    }
 
     async function RegistrarUsuario(nombre, apellido, email, password){
         const user  = await createUserWithEmailAndPassword(auth,email,password) //crea el usuario en Firebase Auth
             .then((usuarioFirebase)=>{
                 return usuarioFirebase.user
             })
-
-            const usuario = { 
-                nombre: nombre,
-                apellido: apellido,
-                email: email,
-                admin: false
-            }
 
         try{
             await setDoc(doc(firestore, `usuarios`, user.uid),usuario)   //carga los datos a firestore

@@ -86,8 +86,6 @@ export default function NavBar(props){
 
     function Header (){
 
-        console.log(props)
-
         if(user){
             if(props.admin){
                 return AdminHeader
