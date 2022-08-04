@@ -2,9 +2,11 @@ import { React, useState } from 'react';
 
 import firebaseApp from '../firebase/credenciales';
 import { getFirestore, doc, setDoc } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 import Header from '../Components/header'
+
+import './herramientas.css'
 
 import { subcategorias } from '../data/data';
 
@@ -22,6 +24,8 @@ export default function HerramientasPage(props){
     const [cat1,setCat1] = useState('')
     const [cat2,setCat2] = useState('')
     const [cat3,setCat3] = useState('')
+    const [imageUpload, setImageUpload] = useState(null)
+    const [isImage, setIsImage] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     
     const herraminetaInsumo = {
@@ -35,7 +39,6 @@ export default function HerramientasPage(props){
     }
 
     async function addTool(){
-
         try{
             await setDoc(doc(firestore, `herramientasInsumos`, codigo),herraminetaInsumo)   //carga los datos a firestore
         }
@@ -43,18 +46,47 @@ export default function HerramientasPage(props){
             setErrorMessage(error)
         }
     }
+    
+    function uploadImage(){
+        if(imageUpload == null) return setErrorMessage("No se ha seleccionado ninguna foto")
+        const imageRef = ref(storage, `herramientasEInsumos/${props.barcode}`)
+        uploadBytes(imageRef, imageUpload)
+        .then(() => {
+            console.log("imagen cargada correctamente")
+        })
+        .catch((error) => {
+            // Handle any errors
+            console.log("error al subir la imagen",error)
+        });
+    }
+
+    function displayImage(){
+        getDownloadURL(ref(storage, `herramientasEInsumos/${props.barcode}`))
+        .then((url) => {
+            console.log("URL recuperada", url)
+        // `url` is the download URL for 'images/stars.jpg'
+            if (url) setIsImage(true)
+            const img = document.getElementById('myimg');
+            img.setAttribute('src', url);
+        })
+        .catch((error) => {
+            // Handle any errors
+        });
+    }
 
     function SubmitHandler(event){
         event.preventDefault()
         addTool()
+        uploadImage()
+        displayImage()
         form.reset()
     }
-    
+
     return(
         <div>
             <Header name = {props.name} admin = {props.admin}/>
             <h1>Agregar herramienta o insumo nuevo</h1>
-            <form id = 'formHerramienta' onSubmit={SubmitHandler}>
+            <form autoComplete="off" id = 'formHerramienta' onSubmit={SubmitHandler}>
                 <label>
                     Nombre
                     <input 
@@ -123,8 +155,11 @@ export default function HerramientasPage(props){
                 </select>
                 </label>}
                 
+                <input type='file' onChange={(event) =>setImageUpload(event.target.files[0])}/>
                 <input type="submit" value="Cargar"/>
+
             </form>
+            <img id="myimg"></img>
             {errorMessage ? <div>{errorMessage}</div> : <span></span>}
         </div>
     )

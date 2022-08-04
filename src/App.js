@@ -61,6 +61,7 @@ function App() {
     },[])
     
     document.addEventListener('keydown',(event)=>{
+        
         if (interval) clearInterval(interval);
         if(event.code == 'Enter'){
             if(barcode) handleBarcode(barcode)
