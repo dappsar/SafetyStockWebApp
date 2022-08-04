@@ -1,37 +1,17 @@
-import { async } from '@firebase/util';
-import {React,useState} from 'react';
-import { getFirestore, doc, setDoc} from 'firebase/firestore'
+import { React, useState } from 'react';
+
 import firebaseApp from '../firebase/credenciales';
+import { getFirestore, doc, setDoc } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
 
 import Header from '../Components/header'
 
 import { subcategorias } from '../data/data';
 
-
-// campos: nommbre, ubicacion, cantidad, marca, contenido, cat1,cat2,cat3, codigo 
-
-//Categoria 1 
-//Ferreteria, herramientas, electricidad, electronica, pinturas, epp, instrumentos electronicos,cables 
-
-//categoria 2 
-//Herramientas: Electricas, carpinteria, herreria, generales, albalineria, medicion, electronica, electricidad 
-
-//ferreteria: Tornillas, tuercas,clavos,arandelas,remaches, tarugos, mechas, lijas 
-
-//electricidad: codos,conectores,bastidores,cajas, tapas, etc 
-
-// electronica: componentes de electronica, protoboards 
-
-//pinturas: Al agua, solventes, esmalte sintetico, sellador, diluyente, enduido, barniz 
-
-//Categoria 3: 
-//Componentes de electronica: Resistores, capacitores, ciruitos integrados, socalos, reles, diodos, 
-// bobinas, fusibles, interruptores, potenciometros, borneras, transistores, disipadores, motores, 
-//finales de carrera, pulsadores, presets, pines
-
 export default function HerramientasPage(props){
     
     const firestore = getFirestore(firebaseApp)
+    const storage = getStorage(firebaseApp)
 
     const form = document.getElementById('formHerramienta') 
 
@@ -42,6 +22,7 @@ export default function HerramientasPage(props){
     const [cat1,setCat1] = useState('')
     const [cat2,setCat2] = useState('')
     const [cat3,setCat3] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
     
     const herraminetaInsumo = {
         nombre: nombre,
@@ -59,7 +40,7 @@ export default function HerramientasPage(props){
             await setDoc(doc(firestore, `herramientasInsumos`, codigo),herraminetaInsumo)   //carga los datos a firestore
         }
         catch (error) {
-            console.error("Error al subir la información a la base de datos: ", error);
+            setErrorMessage(error)
         }
     }
 
@@ -68,7 +49,6 @@ export default function HerramientasPage(props){
         addTool()
         form.reset()
     }
-
     
     return(
         <div>
@@ -80,6 +60,7 @@ export default function HerramientasPage(props){
                     <input 
                     type="name" 
                     id='nombre'
+                    required = {true}
                     onChange={(e)=>{setNombre(e.target.value)}}/>
                 </label>
                 <label>
@@ -87,6 +68,7 @@ export default function HerramientasPage(props){
                     <input 
                     type="number" 
                     id='cantidad'
+                    required = {true}
                     onChange={(e)=>{setCantidad(e.target.value)}}/>
                 </label>
                 <label>
@@ -94,6 +76,7 @@ export default function HerramientasPage(props){
                     <input 
                     type="text" 
                     id='codigo'
+                    required = {true}
                     value={props.barcode}
                     onChange={(e)=>{setCodigo(e.target.value)}}/>
                 </label>
@@ -102,11 +85,13 @@ export default function HerramientasPage(props){
                     <input 
                     type="text" 
                     id='text'
+                    required = {true}
                     onChange={(e)=>{setUbicacion(e.target.value)}}/>
                 </label>
+
                 <label>
                     Categoría
-                <select name="cat1" id="cat1" onChange={(e)=>{setCat1(e.target.value)}}>
+                <select name="cat1" id="cat1" required = {true} onChange={(e)=>{setCat1(e.target.value)}}>
                     <option value="none">Seleccione una catgoría</option>
                     <option value="herramientas">Herramientas</option>
                     <option value="electronica">Electronica</option>
@@ -115,21 +100,32 @@ export default function HerramientasPage(props){
                     <option value="ferreteria">Ferretería</option>
                 </select>
                 </label>
+                
                 {cat1 && <label>
                 Subcategoría
-                <select name="cat2" id="cat2" placeholder='subcategoria' onChange={(e)=>{setCat2(e.target.value)}}>
+                <select name="cat2" id="cat2" required = {true} onChange={(e)=>{setCat2(e.target.value)}}>
                 <option value="none">Seleccione una subcatgoría</option>
                     {subcategorias.map(item => {
-                        console.log('El item es', item.parent, 'y la categoria es', cat1)
                         if (cat1 === item.parent) return <option key={item.key} value={item.text}>{item.text}</option>
                     }
                     )}
                 </select>
                 </label>}
-
+                
+                {cat2 && <label>
+                Subcategoría    
+                <select name="cat3" id="cat3" onChange={(e)=>{setCat3(e.target.value)}}>
+                <option value="none">Seleccione una subcatgoría</option>
+                    {subcategorias.map(item => {
+                        if (cat2 === item.parent) return <option key={item.key} value={item.text}>{item.text}</option>
+                    }
+                    )}
+                </select>
+                </label>}
+                
                 <input type="submit" value="Cargar"/>
             </form>
-            {/* {errorMessage ? <div>{errorMessage}</div> : <span></span>} */}
+            {errorMessage ? <div>{errorMessage}</div> : <span></span>}
         </div>
     )
 }

@@ -5,6 +5,7 @@ import { Route,Switch } from "wouter";
 import firebaseApp from './firebase/credenciales'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getStorage} from 'firebase/storage'
 
 import Home from './Pages/homePage'
 import LoginPage from './Pages/loginPage'
@@ -22,6 +23,8 @@ function App() {
 
     const auth = getAuth(firebaseApp)
     const firestore = getFirestore(firebaseApp)
+    const storage = getStorage(firebaseApp)
+    
     var pathname = window.location.pathname
 
     const [userParams, setUserParams] = useState({})

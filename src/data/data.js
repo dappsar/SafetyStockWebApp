@@ -25,12 +25,25 @@ export const subcategorias = [
 ]
 
 
-//herramientas: Electricas, carpinteria, herreria, generales, albalineria, medicion, ferreteria, electricidad 
+
+
+// campos: nommbre, ubicacion, cantidad, marca, contenido, cat1,cat2,cat3, codigo 
+
+//Categoria 1 
+//Ferreteria, herramientas, electricidad, electronica, pinturas, epp, instrumentos electronicos,cables 
+
+//categoria 2 
+//Herramientas: Electricas, carpinteria, herreria, generales, albalineria, medicion, electronica, electricidad 
 
 //ferreteria: Tornillas, tuercas,clavos,arandelas,remaches, tarugos, mechas, lijas 
 
 //electricidad: codos,conectores,bastidores,cajas, tapas, etc 
 
-// ferreteria: componentes de ferreteria, protoboards 
+// electronica: componentes de electronica, protoboards 
 
 //pinturas: Al agua, solventes, esmalte sintetico, sellador, diluyente, enduido, barniz 
+
+//Categoria 3: 
+//Componentes de electronica: Resistores, capacitores, ciruitos integrados, socalos, reles, diodos, 
+// bobinas, fusibles, interruptores, potenciometros, borneras, transistores, disipadores, motores, 
+//finales de carrera, pulsadores, presets, pines
