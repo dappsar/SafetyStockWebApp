@@ -5,14 +5,16 @@ import { Route,Switch } from "wouter";
 import firebaseApp from './firebase/credenciales'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { getStorage} from 'firebase/storage'
 
 import Home from './Pages/homePage'
 import LoginPage from './Pages/loginPage'
 import SignupPage from './Pages/signupPage'
 import Page404 from './Pages/Page404'
 import Loading from './Pages/loading'
-import Herramientas from './Pages/herramientas'
+import Herramientas from './Pages/Admin/herramientas'
+import Profesores from './Pages/Admin/profesores';
+import Faltantes from './Pages/Admin/faltantes';
+import Historial from './Pages/Admin/historial';
 
 import NotAllowed from './Components/notAllowed';
 
@@ -23,7 +25,6 @@ function App() {
 
     const auth = getAuth(firebaseApp)
     const firestore = getFirestore(firebaseApp)
-    const storage = getStorage(firebaseApp)
     
     var pathname = window.location.pathname
 
@@ -63,12 +64,12 @@ function App() {
     document.addEventListener('keydown',(event)=>{
         
         if (interval) clearInterval(interval);
-        if(event.code == 'Enter'){
+        if(event.code === 'Enter'){
             if(barcode) handleBarcode(barcode)
             barcode = ''
             return;
         }
-        if (event.key !='Shift') barcode+= event.key
+        if (event.key !=='Shift') barcode+= event.key
         interval = setInterval(()=> barcode= '', 20);
     })
 
@@ -84,11 +85,23 @@ function App() {
                 <Route path='/login' component={()=>(<LoginPage/>)}></Route>
                 <Route path='/signup' component={()=>(<SignupPage />)}></Route>
 
-                {/* Admin pages */}
+                    {/* Admin pages */}
             
                 <Route 
                     path={'/herramientas'} 
                     component={()=>admin ? (<Herramientas name = {nombre} admin = {admin} barcode = {scanned}/>) : <NotAllowed />}
+                ></Route>
+                <Route 
+                    path={'/profesores'} 
+                    component={()=>admin ? (<Profesores name = {nombre} admin = {admin}/>) : <NotAllowed />}
+                ></Route>
+                <Route 
+                    path={'/faltantes'} 
+                    component={()=>admin ? (<Faltantes name = {nombre} admin = {admin} />) : <NotAllowed />}
+                ></Route>
+                <Route 
+                    path={'/historial'} 
+                    component={()=>admin ? (<Historial name = {nombre} admin = {admin}/>) : <NotAllowed />}
                 ></Route>
                 
                 <Route >{()=>(<Page404/>)}</Route>

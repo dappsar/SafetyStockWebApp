@@ -1,14 +1,14 @@
 import { React, useState } from 'react';
 
-import firebaseApp from '../firebase/credenciales';
+import firebaseApp from '../../firebase/credenciales';
 import { getFirestore, doc, setDoc } from 'firebase/firestore'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
-import Header from '../Components/header'
+import Header from '../../Components/header'
 
 import './herramientas.css'
 
-import { subcategorias } from '../data/data';
+import { subcategorias } from '../../data/data';
 
 export default function HerramientasPage(props){
     
@@ -19,7 +19,7 @@ export default function HerramientasPage(props){
 
     const [nombre,setNombre] = useState('')
     const [ubicacion,setUbicacion] = useState('')
-    const [codigo,setCodigo] = useState('')
+    const [codigo,setCodigo] = useState(props.barcode)
     const [cantidad,setCantidad] = useState('')
     const [cat1,setCat1] = useState('')
     const [cat2,setCat2] = useState('')
@@ -48,45 +48,48 @@ export default function HerramientasPage(props){
     }
     
     function uploadImage(){
-        if(imageUpload == null) return setErrorMessage("No se ha seleccionado ninguna foto")
-        const imageRef = ref(storage, `herramientasEInsumos/${props.barcode}`)
+        if(imageUpload == null) {
+            return setErrorMessage("No se ha seleccionado ninguna foto")
+        }
+        const imageRef = ref(storage, `herramientasEInsumos/${codigo}`)
         uploadBytes(imageRef, imageUpload)
-        .then(() => {
-            console.log("imagen cargada correctamente")
-        })
-        .catch((error) => {
+            .then((img) => {
+                console.log("imagen cargada correctamente", img)
+                setIsImage(true)
+                displayImage()
+            })
+            .catch((error) => {
             // Handle any errors
-            console.log("error al subir la imagen",error)
-        });
+                console.log("error al subir la imagen",error)
+            });
     }
 
     function displayImage(){
-        getDownloadURL(ref(storage, `herramientasEInsumos/${props.barcode}`))
-        .then((url) => {
-            console.log("URL recuperada", url)
-        // `url` is the download URL for 'images/stars.jpg'
-            if (url) setIsImage(true)
-            const img = document.getElementById('myimg');
-            img.setAttribute('src', url);
-        })
-        .catch((error) => {
-            // Handle any errors
-        });
+        getDownloadURL(ref(storage, `herramientasEInsumos/${codigo}`))
+            .then((url) => {
+                console.log("URL recuperada", url)
+                const img = document.getElementById('myimg');
+                img.setAttribute('src', url);
+            })
+            .catch((error) => {
+                console.log("error al cargar la imagen",error)
+            });
     }
 
-    function SubmitHandler(event){
+    async function SubmitHandler(event){
         event.preventDefault()
         addTool()
-        uploadImage()
-        displayImage()
+        uploadImage() //then calls to displayImage()
+        setIsImage(false)
         form.reset()
+        
     }
 
     return(
         <div>
             <Header name = {props.name} admin = {props.admin}/>
             <h1>Agregar herramienta o insumo nuevo</h1>
-            <form autoComplete="off" id = 'formHerramienta' onSubmit={SubmitHandler}>
+             <form autoComplete="off" id = 'formHerramienta' onSubmit={SubmitHandler}>
                 <label>
                     Nombre
                     <input 
@@ -103,15 +106,7 @@ export default function HerramientasPage(props){
                     required = {true}
                     onChange={(e)=>{setCantidad(e.target.value)}}/>
                 </label>
-                <label>
-                    Código de barras
-                    <input 
-                    type="text" 
-                    id='codigo'
-                    required = {true}
-                    value={props.barcode}
-                    onChange={(e)=>{setCodigo(e.target.value)}}/>
-                </label>
+
                 <label>
                     Ubicación
                     <input 
@@ -120,7 +115,15 @@ export default function HerramientasPage(props){
                     required = {true}
                     onChange={(e)=>{setUbicacion(e.target.value)}}/>
                 </label>
-
+                <label>
+                    Código de barras
+                    <input 
+                    type="text" 
+                    id='codigo'
+                    required = {true}
+                    // value={props.barcode}
+                    onChange={(e)=>{setCodigo(e.target.value)}}/>
+                </label>
                 <label>
                     Categoría
                 <select name="cat1" id="cat1" required = {true} onChange={(e)=>{setCat1(e.target.value)}}>
@@ -154,12 +157,14 @@ export default function HerramientasPage(props){
                     )}
                 </select>
                 </label>}
-                
-                <input type='file' onChange={(event) =>setImageUpload(event.target.files[0])}/>
+                <label>
+                    Subir Imagen
+                <input type='file'accept="image/png, image/jpeg" onChange={(event) =>setImageUpload(event.target.files[0])}/>
+                </label>
                 <input type="submit" value="Cargar"/>
 
             </form>
-            <img id="myimg"></img>
+            {isImage && <img id="myimg"></img>}
             {errorMessage ? <div>{errorMessage}</div> : <span></span>}
         </div>
     )
