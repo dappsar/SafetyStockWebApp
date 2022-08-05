@@ -27,6 +27,7 @@ export default function HerramientasPage(props){
     const [imageUpload, setImageUpload] = useState(null)
     const [isImage, setIsImage] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [successMessage, setSuccessMessage] = useState('')
     
     const herraminetaInsumo = {
         nombre: nombre,
@@ -61,6 +62,8 @@ export default function HerramientasPage(props){
             .catch((error) => {
             // Handle any errors
                 console.log("error al subir la imagen",error)
+                setSuccessMessage("Error al subir la imagen")
+
             });
     }
 
@@ -73,6 +76,7 @@ export default function HerramientasPage(props){
             })
             .catch((error) => {
                 console.log("error al cargar la imagen",error)
+                setSuccessMessage("Error al cargar la imagen")
             });
     }
 
@@ -80,6 +84,7 @@ export default function HerramientasPage(props){
         event.preventDefault()
         addTool()
         uploadImage() //then calls to displayImage()
+        setSuccessMessage("Herramienta creada correctamente!")
         setIsImage(false)
         form.reset()
         
@@ -164,8 +169,12 @@ export default function HerramientasPage(props){
                 <input type="submit" value="Cargar"/>
 
             </form>
+            <br/>
+            <br/>
+            {errorMessage ? <div>{errorMessage}</div> : <span>{successMessage}</span>}
+            <br/>
+            <br/>
             {isImage && <img id="myimg"></img>}
-            {errorMessage ? <div>{errorMessage}</div> : <span></span>}
         </div>
     )
 }
