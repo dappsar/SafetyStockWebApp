@@ -1,6 +1,6 @@
 import React from 'react';
 import { SpinnerCircular } from 'spinners-react';
-import './loadingPage.css'
+import './loading.css'
 
 export default function Loading(){
     return(

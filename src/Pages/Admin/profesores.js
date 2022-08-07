@@ -37,7 +37,7 @@ export default function Profesores(props){
                 <div>{'Email del profesor: ' + user.email}</div>
                 <div>{`¿Es administrador?:  ${user.email ? 'Si' : 'No'} `}</div>
                 {currentUser.uid !== user.uid && <button onClick = {()=>handleClick(user.uid)} >Eliminar usuario</button>}
-                <br/>
+                 <br/>
                 <br/>
                 <br/>
             </div>

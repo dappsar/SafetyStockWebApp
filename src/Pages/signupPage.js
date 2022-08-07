@@ -4,6 +4,8 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, setDoc} from 'firebase/firestore'
 import { useLocation } from 'wouter';
 
+import styles from './signUpPage.module.css'
+
 const auth = getAuth(firebaseApp)
 const firestore = getFirestore(firebaseApp)
 
@@ -39,52 +41,53 @@ export default function NavBar(){
         }
     }
 
-    function SubmitHandler(event){
+    function submitHandler(event){
         event.preventDefault()
         RegistrarUsuario(nombre, apellido, email, password) //funcion para registrar usuarios y subirlos a la base de datos con todos sus campos
         .catch((error) => { //si en RegistrarUsuario() surge un error...
-            if(error.code === 'auth/invalid-email') setErrorMessage("Formato de email incorrecto")
-            if(error.code === 'auth/weak-password') setErrorMessage("La contraseña es demasiado débil")
-            if(error.code === 'auth/email-already-in-use') setErrorMessage("El email ya está en uso") 
+            if(error.code === 'auth/invalid-email') setErrorMessage("formato de email incorrecto")
+            if(error.code === 'auth/weak-password') setErrorMessage("la contraseña es demasiado débil")
+            if(error.code === 'auth/email-already-in-use') setErrorMessage("el email ya está en uso") 
           });
     }
 
     return(
-        <div>
-            <h1>Registrate</h1>
-            <form onSubmit={SubmitHandler}>
-                <label>
-                    Nombre
-                    <input 
-                    type="name" 
-                    id='nombre'
-                    onChange={(e)=>{setNombre(e.target.value)}}/>
-                </label>
-                <label>
-                    Apellido
-                    <input 
-                    type="surname" 
-                    id='apellido'
-                    onChange={(e)=>{setApellido(e.target.value)}}/>
-                </label>
-                <label>
-                    Correo electrónico
-                    <input 
-                    type="email" 
-                    id='email'
-                    onChange={(e)=>{setEmail(e.target.value)}}/>
-                </label>
-                <label>
-                    Contraseña
-                    <input 
-                    type="password" 
-                    id='password'
-                    onChange={(e)=>{setPassword(e.target.value)}}/>
-                </label>
-                <input type="submit" value="Registrarse"/>
-                <a href='/login'>Iniciar sesion</a>
+        
+            <form className={styles.form} onSubmit={submitHandler}>
+                <div className={styles.title}>Safety Stock</div>
+                <div className={styles.subtitle}>Inicia sesión para continuar</div>
+                
+                <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                    <input id="nombre" className={styles.input} type="text" placeholder=" "  onChange={(e)=>{setNombre(e.target.value)}}/>
+                    <div className={styles.cut}></div>
+                    <label to="nombre" className={styles.placeholder}>Nombre</label>
+                </div>
+
+                <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                    <input id="apellido" className={styles.input} type="text" placeholder=" "  onChange={(e)=>{setApellido(e.target.value)}}/>
+                    <div className={styles.cut}></div>
+                    <label to="apellido" className={styles.placeholder}>Apellido</label>
+                </div>
+                
+                <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                    <input id="email" className={styles.input} type="email" placeholder=" "  onChange={(e)=>{setEmail(e.target.value)}}/>
+                    <div className={styles.cut}></div>
+                    <label to="email" className={styles.placeholder}>Email</label>
+                </div>
+                
+                <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                    <input id="password" className={styles.input} type="password" placeholder=" " onChange={(e)=>{setPassword(e.target.value)}} />
+                    <div className={styles.cut}></div>
+                    <label to="password" className={styles.placeholder}>Contraseña</label>
+                </div>
+        
+                <button type="submit" className={styles.submit}>Registrarse</button>
+                <a className={styles.formLink} href='/login'>¿Ya tenés cuenta? Inicia sesión</a>
+                {errorMessage ? <div className={styles.errorMessage}>Error, {errorMessage}</div> : <span></span>}
+
             </form>
-            {errorMessage ? <div>{errorMessage}</div> : <span></span>}
-        </div>
+
+
+
     )
 }

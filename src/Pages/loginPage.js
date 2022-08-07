@@ -3,6 +3,8 @@ import firebaseApp from '../firebase/credenciales';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 import { useLocation } from 'wouter';
 
+import styles from './loginPage.module.css'
+
 export default function NavBar(){
     
     const auth = getAuth(firebaseApp)
@@ -23,37 +25,35 @@ export default function NavBar(){
             }
         )
         .catch((error) => { //en caso de que signInWithEmailAndPassword() de algun error...
-            if(error.code === 'auth/wrong-password') setErrorMessage("Contraseña incorrecta")
-            if(error.code === 'auth/user-not-found') setErrorMessage("El usuario no está registrado")
+            if(error.code === 'auth/wrong-password') setErrorMessage("contraseña incorrecta")
+            if(error.code === 'auth/user-not-found') setErrorMessage("el usuario no está registrado")            
+            if(error.code === 'auth/invalid-email') setErrorMessage("el email o la contraseña son inválidos")
         })
-    }
-    
-    return(
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={submitHandler}>
-                <label>
-                    Correo electrónico
-                    <input 
-                    type="email" 
-                    id='email'
-                    onChange={(e)=>{setEmail(e.target.value)}}/>
-                </label>
-                <label>
-                    Contraseña
-                    <input 
-                    type="password" 
-                    id='password'
-                    onChange={(e)=>{setPassword(e.target.value)}}/>
-                </label>
-                <input 
-                type="submit" 
-                value="Iniciar sesión"
-                />
-            <a href='/signup'>Registrate</a>
-            </form>
-            {errorMessage ? <div>{errorMessage}</div> : <span></span>}
+  }
 
+    return(
+        
+        <form  onSubmit={submitHandler}> {/*className={styles.form}*/}
+        <div >Safety Stock</div> {/*className={styles.subtitle}*/}
+        <div >Inicia sesión para continuar</div> {/*className={styles.subtitle}*/}
+
+        <div className={`${styles.inputContainer} ${styles.ic1}`}>
+        <input id="email" className={styles.input} type="email" placeholder=" "  onChange={(e)=>{setEmail(e.target.value)}}/>
+        <div className={styles.cut}></div>
+        <label to="email" className={styles.placeholder}>Email</label>
         </div>
+        
+        <div className={`${styles.inputContainer} ${styles.ic2}`}>
+        <input id="password" className={styles.input} type="password" placeholder=" " onChange={(e)=>{setPassword(e.target.value)}} />
+        <div className={styles.cut}></div>
+        <label to="password" className={styles.placeholder}>Contraseña</label>
+        </div>
+
+        <button type="submit" className={styles.submit} >Iniciar sesión</button>
+        <a className={styles.formLink} href='/signup'>¿Aún no tenés cuenta? Registrate</a>
+        {errorMessage ? <div className={styles.errorMessage}>Error, {errorMessage}</div> : <span></span>}
+    </form>
+
+
     )
 }
