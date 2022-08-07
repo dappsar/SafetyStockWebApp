@@ -65,11 +65,15 @@
     top: -20px;
     transform: translateY(0);
     transition: transform 200ms;
-    width: 76px;
+    width: 82px;
   }
   
   .cutShort {
     width: 50px;
+  }
+
+  .cutNombre{
+    width: 64px;
   }
   
   .input:focus ~ .cut,

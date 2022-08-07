@@ -59,19 +59,19 @@ export default function NavBar(){
                 
                 <div className={`${styles.inputContainer} ${styles.ic2}`}>
                     <input id="nombre" className={styles.input} type="text" placeholder=" "  onChange={(e)=>{setNombre(e.target.value)}}/>
-                    <div className={styles.cut}></div>
+                    <div className={`${styles.cut} ${styles.cutNombre}`}></div>
                     <label to="nombre" className={styles.placeholder}>Nombre</label>
                 </div>
 
                 <div className={`${styles.inputContainer} ${styles.ic2}`}>
                     <input id="apellido" className={styles.input} type="text" placeholder=" "  onChange={(e)=>{setApellido(e.target.value)}}/>
-                    <div className={styles.cut}></div>
+                    <div className={`${styles.cut} ${styles.cutNombre}`}></div>
                     <label to="apellido" className={styles.placeholder}>Apellido</label>
                 </div>
                 
                 <div className={`${styles.inputContainer} ${styles.ic2}`}>
                     <input id="email" className={styles.input} type="email" placeholder=" "  onChange={(e)=>{setEmail(e.target.value)}}/>
-                    <div className={styles.cut}></div>
+                    <div className={`${styles.cut} ${styles.cutShort}`}></div>
                     <label to="email" className={styles.placeholder}>Email</label>
                 </div>
                 

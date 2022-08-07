@@ -32,28 +32,25 @@ export default function NavBar(){
   }
 
     return(
+        <form  className={styles.form} onSubmit={submitHandler}> 
+            <div className={styles.title} >Safety Stock</div> 
+            <div className={styles.subtitle} >Inicia sesión para continuar</div> 
+
+            <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                <input id="email" className={styles.input} type="email" placeholder=" "  onChange={(e)=>{setEmail(e.target.value)}}/>
+                <div className={`${styles.cut} ${styles.cutShort}`} ></div>
+                <label to="email" className={styles.placeholder}>Email</label>
+            </div>
         
-        <form  onSubmit={submitHandler}> {/*className={styles.form}*/}
-        <div >Safety Stock</div> {/*className={styles.subtitle}*/}
-        <div >Inicia sesión para continuar</div> {/*className={styles.subtitle}*/}
+            <div className={`${styles.inputContainer} ${styles.ic2}`}>
+                <input id="password" className={styles.input} type="password" placeholder=" " onChange={(e)=>{setPassword(e.target.value)}} />
+                <div className={styles.cut}></div>
+                <label to="password" className={styles.placeholder}>Contraseña</label>
+            </div>
 
-        <div className={`${styles.inputContainer} ${styles.ic1}`}>
-        <input id="email" className={styles.input} type="email" placeholder=" "  onChange={(e)=>{setEmail(e.target.value)}}/>
-        <div className={styles.cut}></div>
-        <label to="email" className={styles.placeholder}>Email</label>
-        </div>
-        
-        <div className={`${styles.inputContainer} ${styles.ic2}`}>
-        <input id="password" className={styles.input} type="password" placeholder=" " onChange={(e)=>{setPassword(e.target.value)}} />
-        <div className={styles.cut}></div>
-        <label to="password" className={styles.placeholder}>Contraseña</label>
-        </div>
-
-        <button type="submit" className={styles.submit} >Iniciar sesión</button>
-        <a className={styles.formLink} href='/signup'>¿Aún no tenés cuenta? Registrate</a>
-        {errorMessage ? <div className={styles.errorMessage}>Error, {errorMessage}</div> : <span></span>}
-    </form>
-
-
+            <button type="submit" className={styles.submit} >Iniciar sesión</button>
+            <a className={styles.formLink} href='/signup'>¿Aún no tenés cuenta? Registrate</a>
+            {errorMessage ? <div className={styles.errorMessage}>Error, {errorMessage}</div> : <span></span>}
+        </form>
     )
 }
