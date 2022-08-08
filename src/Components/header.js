@@ -32,7 +32,7 @@ export default function NavBar(props){
                 <a href='busqueda'>Buscar</a>
             </li>
         </ul>
-        <a className='header--account' href='/signup'>Iniciar sesión o regístrate</a>
+        <a className='header--account' href='/login'>Iniciar sesión o regístrate</a>
     </div>
     )
 
@@ -47,7 +47,7 @@ export default function NavBar(props){
                 <a href='busqueda'>Buscar</a>
             </li>
             <li>
-                <a href='/herramientas'>Herramientas</a>
+                <a href='/herramientas'>Administrar herramientas</a>
             </li>
             <li>
                 <a href='profesores'>Profesores</a>
@@ -59,7 +59,7 @@ export default function NavBar(props){
                 <a href='Historial'>Historial</a>
             </li>
         </ul>
-        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${user.email}`}</p>
+        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${props.name}`}</p>
     </header>
     )
 
@@ -80,7 +80,7 @@ export default function NavBar(props){
                 <a href='historial/name'>Mi historial</a>
             </li>
         </ul>
-        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${user.email}`}</p>
+        <p className='header--account' onClick={cerrarSesion}>{user && `Cerrar sesion de ${props.name}`}</p>
     </div>
     )
 

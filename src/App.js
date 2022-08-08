@@ -11,7 +11,7 @@ import LoginPage from './Pages/loginPage'
 import SignupPage from './Pages/signupPage'
 import Page404 from './Pages/Page404'
 import Loading from './Pages/loading'
-import Herramientas from './Pages/Admin/herramientas'
+import Herramientas from './Pages/Admin/administrarHerramientas'
 import Profesores from './Pages/Admin/profesores';
 import Faltantes from './Pages/Admin/faltantes';
 import Historial from './Pages/Admin/historial';
@@ -38,6 +38,8 @@ function App() {
     var interval;
 
     async function getParams(uid){
+        ///Busca la informacion especifica de un documento dentro de /usuarios/ con un UID especifico 
+        ///retornando los datos del profesor 
         const docRef = doc(firestore, `usuarios/${uid}`)
         const docSnap = getDoc(docRef)
         return ((await docSnap).data())
@@ -62,6 +64,7 @@ function App() {
     },[])
     
     document.addEventListener('keydown',(event)=>{
+        ///Lee constantemenete codigos de barras
         
         if (interval) clearInterval(interval);
         if(event.code === 'Enter'){
