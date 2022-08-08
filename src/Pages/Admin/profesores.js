@@ -46,7 +46,7 @@ export default function Profesores(props){
     return(
         <div>
             <Header name = {props.name} admin = {props.admin}/>
-            <h1>Profesores Habilidatos</h1>
+            <h1>Profesores habilitados</h1>
             {usersList}
         </div>
     )
