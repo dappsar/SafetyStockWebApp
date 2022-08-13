@@ -2,6 +2,7 @@
   "name": "webappss",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -31,6 +32,11 @@
       "react-app/jest"
     ]
   },
+  "browser": {
+    "fs": false,
+    "path": false,
+    "os": false
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -42,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    
   }
 }
