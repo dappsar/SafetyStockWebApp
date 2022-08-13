@@ -1,14 +1,12 @@
 import {React,useState,useEffect} from 'react';
 import Header from '../../Components/header'
 
-import { getFirestore, collection, getDocs} from 'firebase/firestore';
-import firebaseApp from '../../firebase/credenciales';
+import { collection, getDocs} from 'firebase/firestore';
+import { firestore } from '../../firebase/credenciales';
 
-import styles from './faltantes.module.css'
+// import styles from './faltantes.module.css'
 
 export default function Faltantes(props){
-
-    const firestore = getFirestore(firebaseApp)
 
     const [faltantes,setFaltantes] = useState([])
 

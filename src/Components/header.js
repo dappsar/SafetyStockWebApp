@@ -1,11 +1,10 @@
 import { React, useState, useEffect } from 'react';
 import './headerStyle.css'
-import firebaseApp from '../firebase/credenciales';
-import { getAuth, signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase/credenciales';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
 
 export default function NavBar(props){
 
-    const auth = getAuth(firebaseApp)
     const [user, setUser] = useState(null)
 
     useEffect( () => {
@@ -96,6 +95,6 @@ export default function NavBar(props){
     }
 
     return(
-        <header>{Header()}</header>
+        <header>{Header()}</header> //Dependiendo de si hay usuario, y si este es o no administrador, se muestran distintos headers
     )
 }

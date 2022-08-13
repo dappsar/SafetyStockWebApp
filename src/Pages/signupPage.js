@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import firebaseApp from '../firebase/credenciales';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { getFirestore, doc, setDoc} from 'firebase/firestore'
+import { auth, firestore } from '../firebase/credenciales';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc} from 'firebase/firestore'
 import { useLocation } from 'wouter';
 
 import styles from './signUpPage.module.css'
-
-const auth = getAuth(firebaseApp)
-const firestore = getFirestore(firebaseApp)
 
 export default function NavBar(){
 
@@ -33,7 +30,7 @@ export default function NavBar(){
             })
 
         try{
-            await setDoc(doc(firestore, `usuarios`, user.uid),usuario)   //carga los datos a firestore
+            await setDoc(doc(firestore, `usuarios`, user.uid),usuario)   //carga los datos a firestore, al fichero de /usuarios/UID de profesor
             setLocation('/')
         }
         catch (error) {
@@ -86,8 +83,6 @@ export default function NavBar(){
                 {errorMessage ? <div className={styles.errorMessage}>Error, {errorMessage}</div> : <span></span>}
 
             </form>
-
-
 
     )
 }

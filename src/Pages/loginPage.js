@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import firebaseApp from '../firebase/credenciales';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../firebase/credenciales';
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { useLocation } from 'wouter';
 
 import styles from './loginPage.module.css'
 
 export default function NavBar(){
-    
-    const auth = getAuth(firebaseApp)
     
     const [, setLocation] = useLocation();
     const [email, setEmail] = useState('')
@@ -19,7 +17,7 @@ export default function NavBar(){
 
         signInWithEmailAndPassword(auth, email, password)
         .then((respuesta) => {
-            (console.log("Se ha iniciado sesion correctamente, el UID del usuario es: ", respuesta.user.uid)) //EL UID!!!  respuesta.user.uid
+            (console.log("Se ha iniciado sesion correctamente, el UID del usuario es: ", respuesta.user.uid)) 
             
             setLocation('/') 
             }

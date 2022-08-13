@@ -1,27 +1,24 @@
 import {React,useState,useEffect} from 'react';
 import Header from '../../Components/header'
 
-import firebaseApp from '../../firebase/credenciales';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, getDocs, deleteDoc, doc  } from 'firebase/firestore';
+import { auth, firestore} from '../../firebase/credenciales';
+import { collection, getDocs, deleteDoc, doc  } from 'firebase/firestore';
 
 export default function Profesores(props){
     
-    const auth = getAuth(firebaseApp)
-    const firestore = getFirestore(firebaseApp)
     const currentUser = auth.currentUser;
 
     const [users, setUsers] = useState([])
 
     useEffect(()=>{
-        const fetchUsers = async ()=>{
-            const {docs} = await getDocs(collection(firestore, "usuarios"));
-            const usersArray = docs.map(singleUser =>({uid: singleUser.id, ...singleUser.data()}))
-            setUsers(usersArray)
-            };
-        
         fetchUsers()
     },[])
+    
+    const fetchUsers = async ()=>{
+        const {docs} = await getDocs(collection(firestore, "usuarios"));
+        const usersArray = docs.map(singleUser =>({uid: singleUser.id, ...singleUser.data()}))
+        setUsers(usersArray)
+    };
 
     function handleClick(uid){
         deleteDoc (doc(firestore,'usuarios',uid))
