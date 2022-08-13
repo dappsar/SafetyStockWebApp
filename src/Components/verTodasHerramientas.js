@@ -5,18 +5,20 @@ import { storage, firestore } from '../firebase/credenciales';
 import { doc, deleteDoc, getDocs, collection } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
-import ReactToPrint,{useReactToPrint} from "react-to-print";
+import ReactToPrint from "react-to-print";
 
 import styles from './verTodasHerramientas.module.css'
 
 export default function VerHerramientas(){
-    
-    const [herramientas,setHerramientas] = useState([{}])
+    //var pos = 0
+    const itemsRef = useRef([])
+    const [herramientas, setHerramientas] = useState([{}])
 
     useEffect(()=>{
         fetchTools()
+        itemsRef.current = itemsRef.current.slice(0, herramientas.length);
     },[])
-    
+
     const fetchTools = async ()=>{
         const {docs} = await getDocs(collection(firestore, "herramientasInsumos"));
         const toolsArray = docs.map(tool =>({...tool.data()}))
@@ -29,38 +31,40 @@ export default function VerHerramientas(){
             fetchTools()
         })
     }
-    
 
-    var pos = 0
-    const componentRef = useRef({})
-    const handlePrint = useReactToPrint({
-      content: () => componentRef.current[pos]
-    });
-
-
-    const showTools = herramientas.map((singleHerramienta,index)=>{
-        console.log(index)
-        
+    const Tool = ({ tool, index }) => {
         return(
-        <div key={singleHerramienta.codigo}>
-            <div>Nombre: {singleHerramienta.nombre}</div>
-            <div>Categoría: {singleHerramienta.cat1 +', '+ singleHerramienta.cat2}</div>
-            <div>Ubicación: {singleHerramienta.ubicacion}</div>
-            <div>Cantidad: {singleHerramienta.cantidad}</div>
-            <button onClick = {()=>handleDelete(singleHerramienta.codigo)}>Eliminar herramienta</button>
+            <div key={tool.codigo}>
+                <div>Nombre: {tool.nombre}</div>
+                <div>Categoría: {tool.cat1 +', '+ tool.cat2}</div>
+                <div>Ubicación: {tool.ubicacion}</div>
+                <div>Cantidad: {tool.cantidad}</div>
+                <button onClick = {()=>handleDelete(tool.codigo)}>Eliminar herramienta</button>
+                <ReactToPrint
+                    trigger={() => (<button>Imprimir codigo de barras</button>)}
+                    content={() => {return itemsRef.current[index]}}
+			    />
+                <div key={tool.codigo} className = {styles.barcode}>
+                    <Barcode 
+                        key={tool.codigo}
+                        ref={(el) => (itemsRef.current[index] = el)}
+                        value = {tool.codigo || ''} 
+                    />
+                </div>
+               <br/>
+                <br/>
+            </div>
+        )
+    }
 
-            <div className = {styles.barcode}><Barcode ref={(element) => componentRef.current[index] = element} value = {singleHerramienta.codigo}/></div>
-            <button onClick={(index => {pos = index
-                return handlePrint})}>Imprimir coddigo de barras</button>
-            
-            <br/>
-            <br/>
-        </div>
-    )})
+
+    const Tools = () => {
+        return (
+            herramientas.map((item, index) => <Tool key={item.codigo} tool={item} index={index} />)
+        )
+    }
         
-    return(
-        <div>
-            {showTools}
-        </div>
+    return (
+        <Tools/>
     )
 }
